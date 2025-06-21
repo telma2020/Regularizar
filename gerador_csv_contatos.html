@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Números CSV - Google Contatos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+        #outputArea {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Gerador de Contatos com CSV para Google Contatos</h2>
+    <p>Digite o DDD e os 5 primeiros dígitos do número (prefixo BIN)</p>
+
+    <label>DDD:</label>
+    <input type="text" id="ddd" maxlength="2" placeholder="Ex: 33"><br>
+
+    <label>Prefixo (5 primeiros dígitos):</label>
+    <input type="text" id="prefixo" maxlength="5" placeholder="Ex: 99411"><br>
+
+    <label>Quantidade de contatos:</label>
+    <input type="number" id="quantidade" value="20" min="1" max="100"><br>
+
+    <button onclick="gerarCSV()">Gerar CSV</button>
+    <button onclick="window.open('https://contacts.google.com', '_blank')">Ir para Google Contatos</button>
+
+    <div id="outputArea">
+        <h3>Arquivo Gerado:</h3>
+        <a id="downloadLink" href="#" download="contatos_gerados.csv">Clique aqui para baixar o CSV</a>
+    </div>
+
+    <script>
+        function gerarCSV() {
+            const ddd = document.getElementById('ddd').value;
+            const prefixo = document.getElementById('prefixo').value;
+            const quantidade = parseInt(document.getElementById('quantidade').value);
+            if (ddd.length !== 2 || prefixo.length !== 5) {
+                alert("Digite um DDD com 2 dígitos e prefixo com 5 dígitos.");
+                return;
+            }
+
+            let csv = "Name,Phone 1 - Value,Phone 1 - Type\n";
+
+            for (let i = 0; i < quantidade; i++) {
+                const sufixo = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                const nome = "Contato " + (i + 1);
+                const numero = `+55${ddd}${prefixo}${sufixo}`;
+                csv += `"${nome}","${numero}","Mobile"\n`;
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.getElementById('downloadLink');
+            link.href = url;
+            document.getElementById('outputArea').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
